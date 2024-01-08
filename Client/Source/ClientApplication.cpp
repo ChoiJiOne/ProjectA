@@ -29,7 +29,7 @@ void ClientApplication::Shutdown()
 
 void ClientApplication::Run()
 {
-	Vector3f cameraPosition = Vector3f(1.0f, 5.0f, 10.0f);
+	Vector3f cameraPosition = Vector3f(10.0f, 5.0f, 10.0f);
 
 	Shader* depthShader = ResourceManager::Get().GetResource<Shader>("ShadowMap");
 
@@ -48,7 +48,7 @@ void ClientApplication::Run()
 	cube->Initialize(vertices, indices);
 
 	StaticMesh* sphere = ResourceManager::Get().CreateResource<StaticMesh>("sphere");
-	GeometryGenerator::CreateSphere(0.5f, 30, vertices, indices);
+	GeometryGenerator::CreateCylinder(0.5f, 1.0f, 30, vertices, indices);
 	sphere->Initialize(vertices, indices);
 
 	const uint32_t SHADOW_WIDTH = 1024;
@@ -83,19 +83,19 @@ void ClientApplication::Run()
 			shadowMap->Clear();
 
 			// 1. 
-			depthShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(0.0f, -3.0f, 0.0f)));
+			depthShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(0.0f, -0.5f, 0.0f)));
 			RenderManager::Get().RenderStaticMesh3D(floor);
 
 			// 2.
-			depthShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(-1.0f, 1.0f, 0.0f)));
+			depthShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(-1.0f, 0.5f, 0.0f)));
 			RenderManager::Get().RenderStaticMesh3D(sphere);
 
 			// 3.
-			depthShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(0.0f, 1.0f, 0.0f)));
+			depthShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(0.0f, 0.5f, 0.0f)));
 			RenderManager::Get().RenderStaticMesh3D(sphere);
 
 			// 4.
-			depthShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(+1.0f, 1.0f, 0.0f)));
+			depthShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(+1.0f, 0.5f, 0.0f)));
 			RenderManager::Get().RenderStaticMesh3D(sphere);
 
 			shadowMap->Unbind();
@@ -116,28 +116,24 @@ void ClientApplication::Run()
 			shadowMap->Active(0);
 
 			// 1.
-			shadowShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(0.0f, -3.0f, 0.0f)));
+			shadowShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(0.0f, -0.5f, 0.0f)));
 			RenderManager::Get().RenderStaticMesh3D(floor);
 
 			// 2.
-			shadowShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(-1.0f, 1.0f, 0.0f)));
+			shadowShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(-1.0f, 0.5f, 0.0f)));
 			RenderManager::Get().RenderStaticMesh3D(sphere);
 
 			// 3.
-			shadowShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(0.0f, 1.0f, 0.0f)));
+			shadowShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(0.0f, 0.5f, 0.0f)));
 			RenderManager::Get().RenderStaticMesh3D(sphere);
 
 			// 4.
-			shadowShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(+1.0f, 1.0f, 0.0f)));
+			shadowShader->SetUniform("world", MathUtils::CreateTranslation(Vector3f(+1.0f, 0.5f, 0.0f)));
 			RenderManager::Get().RenderStaticMesh3D(sphere);
 
 			shadowShader->Unbind();
 		}
 
-		RenderManager::Get().RenderLine3D(view, projection, Vector3f(-10.0f,   0.0f,   0.0f), Vector3f(+10.0f,   0.0f,   0.0f), Vector4f(1.0f, 0.0f, 0.0f, 1.0f));
-		RenderManager::Get().RenderLine3D(view, projection, Vector3f(  0.0f, -10.0f,   0.0f), Vector3f(  0.0f, +10.0f,   0.0f), Vector4f(0.0f, 1.0f, 0.0f, 1.0f));
-		RenderManager::Get().RenderLine3D(view, projection, Vector3f(  0.0f,   0.0f, -10.0f), Vector3f(  0.0f,   0.0f, +10.0f), Vector4f(0.0f, 0.0f, 1.0f, 1.0f));
-		RenderManager::Get().RenderLine3D(view, projection, Vector3f(0.0f, 0.0f, 0.0f), lightPosition, Vector4f(0.0f, 1.0f, 1.0f, 1.0f));
 		RenderManager::Get().EndFrame();
 	}
 }
